@@ -96,17 +96,16 @@ void
 mbe_spectralAmpEnhance (mbe_parms * cur_mp)
 {
 
-  float Rm0, Rm1, R2m0, R2m1, Wl[57], cw0l;
+  float Rm0, Rm1, R2m0, R2m1, Wl[57];
   int l;
   float sum, gamma, M;
 
   Rm0 = 0;
   Rm1 = 0;
-  cw0l = cur_mp->w0 * (float) l;
   for (l = 1; l <= cur_mp->L; l++)
     {
       Rm0 = Rm0 + powf (cur_mp->Ml[l], (float) 2);
-      Rm1 = Rm1 + (powf (cur_mp->Ml[l], (float) 2) * cosf (cw0l));
+      Rm1 = Rm1 + (powf (cur_mp->Ml[l], (float) 2) * cosf (cur_mp->w0 * (float) l));
     }
 
   R2m0 = powf (Rm0, (float) 2);
@@ -116,7 +115,7 @@ mbe_spectralAmpEnhance (mbe_parms * cur_mp)
     {
       if (cur_mp->Ml[l] != 0)
         {
-          Wl[l] = sqrtf (cur_mp->Ml[l]) * powf ((((float) 0.96 * M_PI * ((R2m0 + R2m1) - ((float) 2 * Rm0 * Rm1 * cosf (cw0l)))) / (cur_mp->w0 * Rm0 * (R2m0 - R2m1))), (float) 0.25);
+          Wl[l] = sqrtf (cur_mp->Ml[l]) * powf ((((float) 0.96 * M_PI * ((R2m0 + R2m1) - ((float) 2 * Rm0 * Rm1 * cosf (cur_mp->w0 * (float) l)))) / (cur_mp->w0 * Rm0 * (R2m0 - R2m1))), (float) 0.25);
 
           if ((8 * l) <= cur_mp->L)
             {

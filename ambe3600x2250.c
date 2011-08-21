@@ -142,7 +142,7 @@ mbe_decodeAmbe2250Parms (char *ambe_d, mbe_parms * cur_mp, mbe_parms * prev_mp)
   int ji, i, j, k, l, L, L9, m, am, ak;
   int intkl[57];
   int b0, b1, b2, b3, b4, b5, b6, b7, b8;
-  float f0, Cik[5][11], flokl[57], deltal[57];
+  float f0, Cik[5][18], flokl[57], deltal[57];
   float Sum42, Sum43, Tl[57], Gm[9], Ri[9], sum, c1, c2;
   char tmpstr[13];
   int silence;

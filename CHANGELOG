@@ -1,3 +1,9 @@
+1.2.3	Fixed bugs:
+	Cik array in mbe_decodeAmbe2250Parms was too small
+
+1.2.2	Fixed bugs:
+	uninitialized variable in SpectralAmpEnhance()
+
 1.2.1	New Features:
 
 	Improved unvoiced speech synthesis
