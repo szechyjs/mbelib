@@ -1,0 +1,31 @@
+1.2.1	New Features:
+
+	Improved unvoiced speech synthesis
+
+	Fixed bugs:
+	bug in spectralAmpEnhance()
+
+1.2	New features:
+	Support for imbe7100x4400 vocoder
+	Improved audio quality
+
+	Fixed bugs:
+	error in hamming ecc
+
+1.1	New features:
+	new synthesizer functions with floating point output buffer.
+	original short output buffer function stubs for compatibility.
+	audio gain and clipping is no longer done during synthesis
+	except within the compatibility functions.
+
+1.0.2	Fixed bugs:
+        fixed several problems in synthesizer causing clicks
+	reduced error -> repeat thresholds for reduced noise bursts
+	ambe3600x2250 now correctly handles "Silence" frames
+	ambe Tone and Erasure frames are now indicated with T and E in errorbars
+	
+1.0.1	Fixed bugs: 
+	cur_mp->repeat was not being copied to prev_mp 
+	logic to check for bad mbe frames was incorrect
+
+1.0	First release
