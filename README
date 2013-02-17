@@ -15,7 +15,7 @@ mbelib 1.2.3
 
 Example building instructions on Ubuntu:
 
-	sudo apt-get update && sudo apt-get install git gcc	# Update git and gcc packets
+	sudo apt-get update && sudo apt-get install git make	# Update git and gcc packets
 	git clone <URL of git repository> 			# Something like: git@github.com:USERNAME/mbelib.git
 	cd mbelib						# Move into source folder
 	make							# Actual program making
