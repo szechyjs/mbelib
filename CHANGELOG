@@ -1,6 +1,8 @@
-1.2.x	Fixed bugs:
+1.2.4	Fixed bugs:
 	Makefile cleanup
 	Readme file improvements
+	fix golayMatrix
+	bug in imbe7100x4400
 
 1.2.3	Fixed bugs:
 	Cik array in mbe_decodeAmbe2250Parms was too small
