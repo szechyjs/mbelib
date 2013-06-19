@@ -12,3 +12,11 @@ mbelib 1.2.3
         mbelib 1.2.3 supports the 7200x4400 bit/s codec used in P25 Phase 1,
 	the 7100x4400 bit/s codec used in ProVoice and the "Half Rate"
         3600x2250 bit/s vocoder used in various radio systems.
+
+Example building instructions on Ubuntu:
+
+	sudo apt-get update && sudo apt-get install git make	# Update git and gcc packets
+	git clone <URL of git repository> 			# Something like: git@github.com:USERNAME/mbelib.git
+	cd mbelib						# Move into source folder
+	make							# Actual program making
+	sudo make install					# Program is installed into computer
