@@ -30,19 +30,19 @@ all: libmbe.a libmbe.so.1 libmbe.so ecc.o imbe7200x4400.o imbe7100x4400.c ambe36
 build: all
 
 ecc.o:  ecc.c mbelib.h
-	$(CC) $(CFLAGS) $(INCLUDES) -c ecc.c -o ecc.o
+	$(CC) $(CFLAGS) -c ecc.c -o ecc.o $(INCLUDES)
 
 imbe7200x4400.o: imbe7200x4400.c mbelib.h mbelib_const.h imbe7200x4400_const.h
-	$(CC) $(CFLAGS) $(INCLUDES) -c imbe7200x4400.c -o imbe7200x4400.o
+	$(CC) $(CFLAGS) -c imbe7200x4400.c -o imbe7200x4400.o $(INCLUDES)
 
 imbe7100x4400.o: imbe7100x4400.c mbelib.h mbelib_const.h
-	$(CC) $(CFLAGS) $(INCLUDES) -c imbe7100x4400.c -o imbe7100x4400.o
+	$(CC) $(CFLAGS) -c imbe7100x4400.c -o imbe7100x4400.o $(INCLUDES)
 
 ambe3600x2250.o: ambe3600x2250.c mbelib.h mbelib_const.h ambe3600x2250_const.h
-	$(CC) $(CFLAGS) $(INCLUDES) -c ambe3600x2250.c -o ambe3600x2250.o
+	$(CC) $(CFLAGS) -c ambe3600x2250.c -o ambe3600x2250.o $(INCLUDES)
 
 mbelib.o: mbelib.c mbelib.h
-	$(CC) $(CFLAGS) $(INCLUDES) -c mbelib.c -o mbelib.o
+	$(CC) $(CFLAGS) -c mbelib.c -o mbelib.o $(INCLUDES)
 
 libmbe.a: ecc.o imbe7200x4400.o imbe7100x4400.o ambe3600x2250.o mbelib.o mbelib.h mbelib_const.h imbe7200x4400_const.h ambe3600x2250_const.h
 	$(AR) rvs libmbe.a ecc.o imbe7200x4400.o imbe7100x4400.o ambe3600x2250.o mbelib.o
@@ -50,7 +50,7 @@ libmbe.a: ecc.o imbe7200x4400.o imbe7100x4400.o ambe3600x2250.o mbelib.o mbelib.
 
 libmbe.so.1: ecc.o imbe7200x4400.o imbe7100x4400.o ambe3600x2250.o mbelib.o mbelib.h mbelib_const.h imbe7200x4400_const.h ambe3600x2250_const.h
 	$(CC) -shared -Wl,-soname,libmbe.so.1 -o libmbe.so.1 \
-         ecc.o imbe7200x4400.o imbe7100x4400.o ambe3600x2250.o mbelib.o -lc
+         ecc.o imbe7200x4400.o imbe7100x4400.o ambe3600x2250.o mbelib.o -lc -lm
 
 libmbe.so: libmbe.so.1
 	rm -f libmbe.so

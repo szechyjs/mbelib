@@ -295,24 +295,18 @@ mbe_convertImbe7100to7200 (char *imbe_d)
 
   j = 0;
   k = 1;
-  for (i = 0; i < 48; i++)
+  while (j < 87)
     {
       tmp_imbe[j] = imbe_d[k];
-      j++;
-      k++;
-      if (k == 41)
+      if (++j == 48)
         {
-          k += (K + 2);         // skip over b2.2, b2.1, b1
+          j += (K + 2);         // skip over b1, b2.2, b2.1 on dest
+        }
+      if (++k == 42)
+        {
+          k += (K + 2);         // skip over b2.2, b2.1, b1 on src
         }
     }
-  j = (50 + K);
-  for (i = 0; i < (39 - (K + 2)); i++)
-    {
-      tmp_imbe[j] = imbe_d[k];
-      j++;
-      k++;
-    }
-
 
   //copy new format back to imbe_d
 
