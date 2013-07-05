@@ -13,19 +13,55 @@
 # OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 # PERFORMANCE OF THIS SOFTWARE.
 
-CC = gcc
-CFLAGS = -O2 -fPIC
-INCLUDES = -I.
-INSTALL=install
-AR=ar
-RANLIB=ranlib
-LDCONFIG=/sbin/ldconfig
-DEST_BASE=/usr/local
-DEST_INC=${DEST_BASE}/include
-DEST_LIB=${DEST_BASE}/lib
-DEST_BIN=${DEST_BASE}/bin
+CC 						?= 		gcc
+LD						:=		$(CC)
+CFLAGS					?=		-g -O2
+CFLAGS 					:= 		$(CFLAGS) -fPIC
+INCLUDES 				?= 		-I.
+INSTALL					?=		install
+AR						?=		ar
+RANLIB					?=		ranlib
+LDCONFIG				?=		/sbin/ldconfig
 
-all: libmbe.a libmbe.so.1 libmbe.so ecc.o imbe7200x4400.o imbe7100x4400.c ambe3600x2250.o mbelib.o
+PREFIX 					?=		/usr/local
+DEST_INC				=		${PREFIX}/include
+DEST_LIB				=		${PREFIX}/lib
+DEST_BIN				=		${DEST_BASE}/bin
+
+PLATFORM ?= $(shell ./idplatform.sh)
+
+# Make sure the platform ID is valid
+VALID_PLATFORMS :=      osx linux win32
+ifeq ($(filter $(PLATFORM),$(VALID_PLATFORMS)),)
+	$(error Invalid PLATFORM '$(PLATFORM)'. Valid platforms are: $(VALID_PLATFORMS))
+endif
+
+SOLIB_PFX               :=      libmbe
+SONAME_VERSION			:= 		1
+
+ifeq ($(PLATFORM),osx)
+	SOLIB               :=      $(SOLIB_PFX).dylib
+	SONAME              :=      $(SOLIB_PFX).$(SONAME_VERSION).dylib
+	SOVERS              :=      $(SOLIB_PFX).$(SONAME_VERSION).0.dylib
+	LDFLAGS             :=      $(LDFLAGS) -dynamiclib -install_name $(SONAME)
+endif
+
+ifeq ($(PLATFORM),linux)
+	SOLIB               :=      $(SOLIB_PFX).so
+	SONAME              :=      $(SOLIB_PFX).so.$(SONAME_VERSION)
+	SOVERS              :=      $(SOLIB_PFX).so.$(SONAME_VERSION).0
+	LDFLAGS             :=      $(LDFLAGS) -shared -Wl,-soname,$(SONAME)
+endif
+
+ifeq ($(PLATFORM),win32)
+	SOLIB               :=      $(SOLIB_PFX).dll
+	SONAME              :=      $(SOLIB_PFX).$(SONAME_VERSION).dll
+	SOVERS              :=      $(SOLIB_PFX).$(SONAME_VERSION).0.dll
+	LDFLAGS             :=      $(LDFLAGS) -shared -Wl,-soname,$(SONAME)
+endif
+
+
+all: libmbe.a $(SONAME) $(SOVERS) ecc.o imbe7200x4400.o imbe7100x4400.c ambe3600x2250.o mbelib.o
 
 build: all
 
@@ -48,28 +84,33 @@ libmbe.a: ecc.o imbe7200x4400.o imbe7100x4400.o ambe3600x2250.o mbelib.o mbelib.
 	$(AR) rvs libmbe.a ecc.o imbe7200x4400.o imbe7100x4400.o ambe3600x2250.o mbelib.o
 	$(RANLIB) libmbe.a
 
-libmbe.so.1: ecc.o imbe7200x4400.o imbe7100x4400.o ambe3600x2250.o mbelib.o mbelib.h mbelib_const.h imbe7200x4400_const.h ambe3600x2250_const.h
-	$(CC) -shared -Wl,-soname,libmbe.so.1 -o libmbe.so.1 \
+$(SOVERS): ecc.o imbe7200x4400.o imbe7100x4400.o ambe3600x2250.o mbelib.o mbelib.h mbelib_const.h imbe7200x4400_const.h ambe3600x2250_const.h
+	$(LD) $(LDFLAGS) -o $@ \
          ecc.o imbe7200x4400.o imbe7100x4400.o ambe3600x2250.o mbelib.o -lc -lm
 
-libmbe.so: libmbe.so.1
-	rm -f libmbe.so
-	ln -s libmbe.so.1 libmbe.so
+$(SONAME) $(SOLIB): $(SOVERS)
+	rm -f $(SONAME) $(SOLIB)
+	ln -s $(notdir $<) $(SONAME)
+	ln -s $(notdir $<) $(SOLIB)
 
 clean:
 	rm -f *.o
 	rm -f *.a
 	rm -f *.so*
+	rm -f $(SOLIB) $(SOVERS) $(SONAME)
 
-install: libmbe.a libmbe.so.1 libmbe.so
+install: libmbe.a $(SONAME) $(SOVERS)
+	mkdir -p $(DEST_INC) $(DEST_LIB)
 	$(INSTALL) mbelib.h $(DEST_INC)
 	$(INSTALL) libmbe.a $(DEST_LIB)
-	$(INSTALL) libmbe.so.1 $(DEST_LIB)
-	$(INSTALL) libmbe.so $(DEST_LIB)
+	$(INSTALL) $(SOVERS) $(DEST_LIB)
+	$(INSTALL) $(SONAME) $(DEST_LIB)
+ifneq ($(PLATFORM),osx)
 	$(LDCONFIG) $(DEST_LIB)
+endif
 
 uninstall: 
 	rm -f $(DEST_INC)/mbelib.h
 	rm -f $(DEST_LIB)/libmbe.a
-	rm -f $(DEST_LIB)/libmbe.so.1
-	rm -f $(DEST_LIB)/libmbe.so
+	rm -f $(DEST_LIB)/$(SOVERS)
+	rm -f $(DEST_LIB)/$(SONAME)
