@@ -13,7 +13,8 @@ TARGET_LINK_LIBRARIES(mbe-shared m)
 install(TARGETS mbe-static mbe-shared DESTINATION lib)
 install (FILES "${PROJECT_SOURCE_DIR}/mbelib.h" DESTINATION include)
  
-set_target_properties(mbe-static mbe-shared PROPERTIES OUTPUT_NAME mbe VERSION 1.0 SOVERSION 1 )
+set_target_properties(mbe-static mbe-shared PROPERTIES OUTPUT_NAME mbe
+                      VERSION 1.0 SOVERSION 1 INSTALL_NAME_DIR ${CMAKE_INSTALL_PREFIX}/lib )
 
 # uninstall target
 configure_file(
