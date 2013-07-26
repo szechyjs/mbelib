@@ -22,6 +22,7 @@ Example building instructions on Ubuntu:
     git clone <URL of git repository>   # Something like: git@github.com:USERNAME/mbelib.git
     cd mbelib                           # Move into source folder
     mkdir build                         # Create build directory
+    cd build                            # Move to build directory
     cmake ..                            # Create Makefile for current system
     make                                # Compiles the library
     sudo make install                   # Library is installed into computer
