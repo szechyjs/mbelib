@@ -9,9 +9,9 @@ PATENT NOTICE
     Readers are strongly advised to check for any patent restrictions or 
     licencing requirements before compiling or using this source code.
 
-mbelib 1.2.4
+mbelib 1.2.5
 
-        mbelib 1.2.3 supports the 7200x4400 bit/s codec used in P25 Phase 1,
+        mbelib supports the 7200x4400 bit/s codec used in P25 Phase 1,
         the 7100x4400 bit/s codec used in ProVoice and the "Half Rate"
         3600x2250 bit/s vocoder used in various radio systems.
 

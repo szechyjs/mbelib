@@ -1,3 +1,7 @@
+1.2.5	Use CMake:
+	The cross platform building was getting hard to maintain,
+	removed Makefile in favor of CMake.
+
 1.2.4	Fixed bugs:
 	Makefile cleanup
 	Readme file improvements

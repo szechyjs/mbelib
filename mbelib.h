@@ -18,7 +18,7 @@
 #ifndef _MBELIB_H
 #define _MBELIB_H
 
-#define MBELIB_VERSION "1.2.4"
+#define MBELIB_VERSION "1.2.5"
 
 #include "config.h"
 #include <stdio.h>
