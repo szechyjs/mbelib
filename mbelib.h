@@ -20,10 +20,6 @@
 
 #define MBELIB_VERSION "1.2.5"
 
-#include "config.h"
-#include <stdio.h>
-#include <math.h>
-
 struct mbe_parameters
 {
   float w0;
