@@ -16,7 +16,10 @@
  */
 
 #include <stdlib.h>
-#include <mbelib.h>
+#include <stdio.h>
+#include <math.h>
+
+#include "mbelib.h"
 
 void
 mbe_dumpImbe7100x4400Data (char *imbe_d)

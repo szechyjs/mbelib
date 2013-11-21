@@ -16,8 +16,11 @@
  */
 
 #include <stdlib.h>
-#include <mbelib.h>
-#include <ambe3600x2250_const.h>
+#include <stdio.h>
+#include <math.h>
+
+#include "mbelib.h"
+#include "ambe3600x2250_const.h"
 
 void
 mbe_dumpAmbe2250Data (char *ambe_d)

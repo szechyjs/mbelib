@@ -16,6 +16,9 @@
  */
 
 #include <stdlib.h>
+#include <stdio.h>
+#include <math.h>
+
 #include "mbelib.h"
 #include "mbelib_const.h"
 
