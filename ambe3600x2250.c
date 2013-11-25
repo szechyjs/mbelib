@@ -86,6 +86,8 @@ mbe_eccAmbe3600x2250C0 (char ambe_fr[4][24])
       in[j] = ambe_fr[0][j + 1];
     }
   errs = mbe_golay2312 (in, out);
+  // ambe_fr[0][0] should be the C0 golay24 parity bit.
+  // TODO: actually test that here...
   for (j = 0; j < 23; j++)
     {
       ambe_fr[0][j + 1] = out[j];
@@ -147,7 +149,6 @@ mbe_decodeAmbe2250Parms (char *ambe_d, mbe_parms * cur_mp, mbe_parms * prev_mp)
   int b0, b1, b2, b3, b4, b5, b6, b7, b8;
   float f0, Cik[5][18], flokl[57], deltal[57];
   float Sum42, Sum43, Tl[57], Gm[9], Ri[9], sum, c1, c2;
-  char tmpstr[13];
   int silence;
   int Ji[5], jl;
   float deltaGamma, BigGamma;
@@ -163,23 +164,22 @@ mbe_decodeAmbe2250Parms (char *ambe_d, mbe_parms * cur_mp, mbe_parms * prev_mp)
   cur_mp->repeat = prev_mp->repeat;
 
   // decode fundamental frequency w0 from b0
-  tmpstr[7] = 0;
-  tmpstr[0] = ambe_d[0] + 48;
-  tmpstr[1] = ambe_d[1] + 48;
-  tmpstr[2] = ambe_d[2] + 48;
-  tmpstr[3] = ambe_d[3] + 48;
-  tmpstr[4] = ambe_d[37] + 48;
-  tmpstr[5] = ambe_d[38] + 48;
-  tmpstr[6] = ambe_d[39] + 48;
-  b0 = strtol (tmpstr, NULL, 2);
-  if ((b0 >= 120) && (b0 <= 123))
+  b0 = 0;
+  b0 |= ambe_d[0]<<6;
+  b0 |= ambe_d[1]<<5;
+  b0 |= ambe_d[2]<<4;
+  b0 |= ambe_d[3]<<3;
+  b0 |= ambe_d[37]<<2;
+  b0 |= ambe_d[38]<<1;
+  b0 |= ambe_d[39];
+  if ((b0 >= 120) && (b0 <= 123)) // if w0 bits are 1111000, 1111001, 1111010 or 1111011, frame is erasure
     {
 #ifdef AMBE_DEBUG
       printf ("Erasure Frame\n");
 #endif
       return (2);
     }
-  else if ((b0 == 124) || (b0 == 125))
+  else if ((b0 == 124) || (b0 == 125)) // if w0 bits are 1111100 or 1111101, frame is silence
     {
 #ifdef AMBE_DEBUG
       printf ("Silence Frame\n");
@@ -194,7 +194,7 @@ mbe_decodeAmbe2250Parms (char *ambe_d, mbe_parms * cur_mp, mbe_parms * prev_mp)
           cur_mp->Vl[l] = 0;
         }
     }
-  else if ((b0 == 126) || (b0 == 127))
+  else if ((b0 == 126) || (b0 == 127)) // if w0 bits are 1111110 or 1111111, frame is tone
     {
 #ifdef AMBE_DEBUG
       printf ("Tone Frame\n");
@@ -222,7 +222,7 @@ mbe_decodeAmbe2250Parms (char *ambe_d, mbe_parms * cur_mp, mbe_parms * prev_mp)
       // L from specification document 
       // lookup L in tabl3
       L = AmbeLtable[b0];
-      // L formula form patent filings
+      // L formula from patent filings
       //L=(int)((float)0.4627 / f0);
       cur_mp->L = L;
     }
@@ -230,13 +230,12 @@ mbe_decodeAmbe2250Parms (char *ambe_d, mbe_parms * cur_mp, mbe_parms * prev_mp)
 
   // decode V/UV parameters
   // load b1 from ambe_d
-  tmpstr[5] = 0;
-  tmpstr[0] = ambe_d[4] + 48;
-  tmpstr[1] = ambe_d[5] + 48;
-  tmpstr[2] = ambe_d[6] + 48;
-  tmpstr[3] = ambe_d[7] + 48;
-  tmpstr[4] = ambe_d[35] + 48;
-  b1 = strtol (tmpstr, NULL, 2);
+  b1 = 0;
+  b1 |= ambe_d[4]<<4;
+  b1 |= ambe_d[5]<<3;
+  b1 |= ambe_d[6]<<2;
+  b1 |= ambe_d[7]<<1;
+  b1 |= ambe_d[35];
 
   for (l = 1; l <= L; l++)
     {
@@ -259,13 +258,12 @@ mbe_decodeAmbe2250Parms (char *ambe_d, mbe_parms * cur_mp, mbe_parms * prev_mp)
 
   // decode gain vector
   // load b2 from ambe_d
-  tmpstr[5] = 0;
-  tmpstr[0] = ambe_d[8] + 48;
-  tmpstr[1] = ambe_d[9] + 48;
-  tmpstr[2] = ambe_d[10] + 48;
-  tmpstr[3] = ambe_d[11] + 48;
-  tmpstr[4] = ambe_d[36] + 48;
-  b2 = strtol (tmpstr, NULL, 2);
+  b2 = 0;
+  b2 |= ambe_d[8]<<4;
+  b2 |= ambe_d[9]<<3;
+  b2 |= ambe_d[10]<<2;
+  b2 |= ambe_d[11]<<1;
+  b2 |= ambe_d[36];
 
   deltaGamma = AmbeDg[b2];
   cur_mp->gamma = deltaGamma + ((float) 0.5 * prev_mp->gamma);
@@ -278,31 +276,29 @@ mbe_decodeAmbe2250Parms (char *ambe_d, mbe_parms * cur_mp, mbe_parms * prev_mp)
   Gm[1] = 0;
 
   // load b3 from ambe_d
-  tmpstr[9] = 0;
-  tmpstr[0] = ambe_d[12] + 48;
-  tmpstr[1] = ambe_d[13] + 48;
-  tmpstr[2] = ambe_d[14] + 48;
-  tmpstr[3] = ambe_d[15] + 48;
-  tmpstr[4] = ambe_d[16] + 48;
-  tmpstr[5] = ambe_d[17] + 48;
-  tmpstr[6] = ambe_d[18] + 48;
-  tmpstr[7] = ambe_d[19] + 48;
-  tmpstr[8] = ambe_d[40] + 48;
-  b3 = strtol (tmpstr, NULL, 2);
+  b3 = 0;
+  b3 |= ambe_d[12]<<8;
+  b3 |= ambe_d[13]<<7;
+  b3 |= ambe_d[14]<<6;
+  b3 |= ambe_d[15]<<5;
+  b3 |= ambe_d[16]<<4;
+  b3 |= ambe_d[17]<<3;
+  b3 |= ambe_d[18]<<2;
+  b3 |= ambe_d[19]<<1;
+  b3 |= ambe_d[40];
   Gm[2] = AmbePRBA24[b3][0];
   Gm[3] = AmbePRBA24[b3][1];
   Gm[4] = AmbePRBA24[b3][2];
 
   // load b4 from ambe_d
-  tmpstr[7] = 0;
-  tmpstr[0] = ambe_d[20] + 48;
-  tmpstr[1] = ambe_d[21] + 48;
-  tmpstr[2] = ambe_d[22] + 48;
-  tmpstr[3] = ambe_d[23] + 48;
-  tmpstr[4] = ambe_d[41] + 48;
-  tmpstr[5] = ambe_d[42] + 48;
-  tmpstr[6] = ambe_d[43] + 48;
-  b4 = strtol (tmpstr, NULL, 2);
+  b4 = 0;
+  b4 |= ambe_d[20]<<6;
+  b4 |= ambe_d[21]<<5;
+  b4 |= ambe_d[22]<<4;
+  b4 |= ambe_d[23]<<3;
+  b4 |= ambe_d[41]<<2;
+  b4 |= ambe_d[42]<<1;
+  b4 |= ambe_d[43];
   Gm[5] = AmbePRBA58[b4][0];
   Gm[6] = AmbePRBA58[b4][1];
   Gm[7] = AmbePRBA58[b4][2];
@@ -351,36 +347,32 @@ mbe_decodeAmbe2250Parms (char *ambe_d, mbe_parms * cur_mp, mbe_parms * prev_mp)
   // decode HOC
 
   // load b5 from ambe_d
-  tmpstr[5] = 0;
-  tmpstr[0] = ambe_d[24] + 48;
-  tmpstr[1] = ambe_d[25] + 48;
-  tmpstr[2] = ambe_d[26] + 48;
-  tmpstr[3] = ambe_d[27] + 48;
-  tmpstr[4] = ambe_d[44] + 48;
-  b5 = strtol (tmpstr, NULL, 2);
+  b5 = 0;
+  b5 |= ambe_d[24]<<4;
+  b5 |= ambe_d[25]<<3;
+  b5 |= ambe_d[26]<<2;
+  b5 |= ambe_d[27]<<1;
+  b5 |= ambe_d[44];
 
   // load b6 from ambe_d
-  tmpstr[4] = 0;
-  tmpstr[0] = ambe_d[28] + 48;
-  tmpstr[1] = ambe_d[29] + 48;
-  tmpstr[2] = ambe_d[30] + 48;
-  tmpstr[3] = ambe_d[45] + 48;
-  b6 = strtol (tmpstr, NULL, 2);
+  b6 = 0;
+  b6 |= ambe_d[28]<<3;
+  b6 |= ambe_d[29]<<2;
+  b6 |= ambe_d[30]<<1;
+  b6 |= ambe_d[45];
 
   // load b7 from ambe_d
-  tmpstr[4] = 0;
-  tmpstr[0] = ambe_d[31] + 48;
-  tmpstr[1] = ambe_d[32] + 48;
-  tmpstr[2] = ambe_d[33] + 48;
-  tmpstr[3] = ambe_d[46] + 48;
-  b7 = strtol (tmpstr, NULL, 2);
+  b7 = 0;
+  b7 |= ambe_d[31]<<3;
+  b7 |= ambe_d[32]<<2;
+  b7 |= ambe_d[33]<<1;
+  b7 |= ambe_d[46];
 
   // load b8 from ambe_d
-  tmpstr[3] = 0;
-  tmpstr[0] = ambe_d[34] + 48;
-  tmpstr[1] = ambe_d[47] + 48;
-  tmpstr[2] = ambe_d[48] + 48;
-  b8 = strtol (tmpstr, NULL, 2);
+  b8 = 0;
+  b8 |= ambe_d[34]<<2;
+  b8 |= ambe_d[47]<<1;
+  b8 |= ambe_d[48];
 
   // lookup Ji
   Ji[1] = AmbeLmprbl[L][0];
@@ -566,18 +558,14 @@ mbe_demodulateAmbe3600x2250Data (char ambe_fr[4][24])
 {
   int i, j, k;
   unsigned short pr[115];
-  unsigned short foo;
-  char tmpstr[25];
+  unsigned short foo = 0;
 
   // create pseudo-random modulator
-  j = 0;
-  tmpstr[12] = 0;
   for (i = 23; i >= 12; i--)
     {
-      tmpstr[j] = (ambe_fr[0][i] + 48);
-      j++;
+      foo <<= 1;
+      foo |= ambe_fr[0][i];
     }
-  foo = strtol (tmpstr, NULL, 2);
   pr[0] = (16 * foo);
   for (i = 1; i < 24; i++)
     {
