@@ -20,10 +20,10 @@
 #include <math.h>
 
 #include "mbelib.h"
-#include "ambe3600x2250_const.h"
+#include "ambe3600x2450_const.h"
 
 void
-mbe_dumpAmbe2250Data (char *ambe_d)
+mbe_dumpAmbe2450Data (char *ambe_d)
 {
 
   int i;
@@ -39,7 +39,7 @@ mbe_dumpAmbe2250Data (char *ambe_d)
 }
 
 void
-mbe_dumpAmbe3600x2250Frame (char ambe_fr[4][24])
+mbe_dumpAmbe3600x2450Frame (char ambe_fr[4][24])
 {
 
   int j;
@@ -75,7 +75,7 @@ mbe_dumpAmbe3600x2250Frame (char ambe_fr[4][24])
 }
 
 int
-mbe_eccAmbe3600x2250C0 (char ambe_fr[4][24])
+mbe_eccAmbe3600x2450C0 (char ambe_fr[4][24])
 {
 
   int j, errs;
@@ -97,7 +97,7 @@ mbe_eccAmbe3600x2250C0 (char ambe_fr[4][24])
 }
 
 int
-mbe_eccAmbe3600x2250Data (char ambe_fr[4][24], char *ambe_d)
+mbe_eccAmbe3600x2450Data (char ambe_fr[4][24], char *ambe_d)
 {
 
   int j, errs;
@@ -141,7 +141,7 @@ mbe_eccAmbe3600x2250Data (char ambe_fr[4][24], char *ambe_d)
 }
 
 int
-mbe_decodeAmbe2250Parms (char *ambe_d, mbe_parms * cur_mp, mbe_parms * prev_mp)
+mbe_decodeAmbe2450Parms (char *ambe_d, mbe_parms * cur_mp, mbe_parms * prev_mp)
 {
 
   int ji, i, j, k, l, L, L9, m, am, ak;
@@ -219,7 +219,7 @@ mbe_decodeAmbe2250Parms (char *ambe_d, mbe_parms * cur_mp, mbe_parms * prev_mp)
   // decode L
   if (silence == 0)
     {
-      // L from specification document 
+      // L from specification document
       // lookup L in tabl3
       L = AmbeLtable[b0];
       // L formula from patent filings
@@ -554,7 +554,7 @@ mbe_decodeAmbe2250Parms (char *ambe_d, mbe_parms * cur_mp, mbe_parms * prev_mp)
 }
 
 void
-mbe_demodulateAmbe3600x2250Data (char ambe_fr[4][24])
+mbe_demodulateAmbe3600x2450Data (char ambe_fr[4][24])
 {
   int i, j, k;
   unsigned short pr[115];
@@ -586,7 +586,7 @@ mbe_demodulateAmbe3600x2250Data (char ambe_fr[4][24])
 }
 
 void
-mbe_processAmbe2250Dataf (float *aout_buf, int *errs, int *errs2, char *err_str, char ambe_d[49], mbe_parms * cur_mp, mbe_parms * prev_mp, mbe_parms * prev_mp_enhanced, int uvquality)
+mbe_processAmbe2450Dataf (float *aout_buf, int *errs, int *errs2, char *err_str, char ambe_d[49], mbe_parms * cur_mp, mbe_parms * prev_mp, mbe_parms * prev_mp_enhanced, int uvquality)
 {
 
   int i, bad;
@@ -597,7 +597,7 @@ mbe_processAmbe2250Dataf (float *aout_buf, int *errs, int *errs2, char *err_str,
       err_str++;
     }
 
-  bad = mbe_decodeAmbe2250Parms (ambe_d, cur_mp, prev_mp);
+  bad = mbe_decodeAmbe2450Parms (ambe_d, cur_mp, prev_mp);
   if (bad == 2)
     {
       // Erasure frame
@@ -650,33 +650,33 @@ mbe_processAmbe2250Dataf (float *aout_buf, int *errs, int *errs2, char *err_str,
 }
 
 void
-mbe_processAmbe2250Data (short *aout_buf, int *errs, int *errs2, char *err_str, char ambe_d[49], mbe_parms * cur_mp, mbe_parms * prev_mp, mbe_parms * prev_mp_enhanced, int uvquality)
+mbe_processAmbe2450Data (short *aout_buf, int *errs, int *errs2, char *err_str, char ambe_d[49], mbe_parms * cur_mp, mbe_parms * prev_mp, mbe_parms * prev_mp_enhanced, int uvquality)
 {
   float float_buf[160];
 
-  mbe_processAmbe2250Dataf (float_buf, errs, errs2, err_str, ambe_d, cur_mp, prev_mp, prev_mp_enhanced, uvquality);
+  mbe_processAmbe2450Dataf (float_buf, errs, errs2, err_str, ambe_d, cur_mp, prev_mp, prev_mp_enhanced, uvquality);
   mbe_floattoshort (float_buf, aout_buf);
 }
 
 void
-mbe_processAmbe3600x2250Framef (float *aout_buf, int *errs, int *errs2, char *err_str, char ambe_fr[4][24], char ambe_d[49], mbe_parms * cur_mp, mbe_parms * prev_mp, mbe_parms * prev_mp_enhanced, int uvquality)
+mbe_processAmbe3600x2450Framef (float *aout_buf, int *errs, int *errs2, char *err_str, char ambe_fr[4][24], char ambe_d[49], mbe_parms * cur_mp, mbe_parms * prev_mp, mbe_parms * prev_mp_enhanced, int uvquality)
 {
 
   *errs = 0;
   *errs2 = 0;
-  *errs = mbe_eccAmbe3600x2250C0 (ambe_fr);
-  mbe_demodulateAmbe3600x2250Data (ambe_fr);
+  *errs = mbe_eccAmbe3600x2450C0 (ambe_fr);
+  mbe_demodulateAmbe3600x2450Data (ambe_fr);
   *errs2 = *errs;
-  *errs2 += mbe_eccAmbe3600x2250Data (ambe_fr, ambe_d);
+  *errs2 += mbe_eccAmbe3600x2450Data (ambe_fr, ambe_d);
 
-  mbe_processAmbe2250Dataf (aout_buf, errs, errs2, err_str, ambe_d, cur_mp, prev_mp, prev_mp_enhanced, uvquality);
+  mbe_processAmbe2450Dataf (aout_buf, errs, errs2, err_str, ambe_d, cur_mp, prev_mp, prev_mp_enhanced, uvquality);
 }
 
 void
-mbe_processAmbe3600x2250Frame (short *aout_buf, int *errs, int *errs2, char *err_str, char ambe_fr[4][24], char ambe_d[49], mbe_parms * cur_mp, mbe_parms * prev_mp, mbe_parms * prev_mp_enhanced, int uvquality)
+mbe_processAmbe3600x2450Frame (short *aout_buf, int *errs, int *errs2, char *err_str, char ambe_fr[4][24], char ambe_d[49], mbe_parms * cur_mp, mbe_parms * prev_mp, mbe_parms * prev_mp_enhanced, int uvquality)
 {
   float float_buf[160];
 
-  mbe_processAmbe3600x2250Framef (float_buf, errs, errs2, err_str, ambe_fr, ambe_d, cur_mp, prev_mp, prev_mp_enhanced, uvquality);
+  mbe_processAmbe3600x2450Framef (float_buf, errs, errs2, err_str, ambe_fr, ambe_d, cur_mp, prev_mp, prev_mp_enhanced, uvquality);
   mbe_floattoshort (float_buf, aout_buf);
 }

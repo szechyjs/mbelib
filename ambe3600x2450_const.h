@@ -15,11 +15,11 @@
  * PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef _AMBE3600x2250_CONST_H
-#define _AMBE3600x2250_CONST_H
+#ifndef _AMBE3600x2450_CONST_H
+#define _AMBE3600x2450_CONST_H
 
 /*
- * Fundamental Frequency Quanitization Table 
+ * Fundamental Frequency Quanitization Table
  */
 
 const float AmbeW0table[120] = {
@@ -968,4 +968,4 @@ const float AmbeHOCb8[8][4] = {
   {0.096949, -0.096400, 0.083194, 0.049306}
 };
 
-#endif
+#endif /* _AMBE3600x2450_CONST_H */
