@@ -1,0 +1,20 @@
+project(mbetest)
+
+add_subdirectory(gtest)
+add_subdirectory(gmock)
+
+FILE(GLOB SRCS *.cpp)
+
+include_directories(
+    ${PROJECT_SOURCE_DIR}/gtest/include
+    ${PROJECT_SOURCE_DIR}/gmock/include
+    ${mbe_SOURCE_DIR}
+)
+
+add_custom_target(test
+    DEPENDS mbetest
+    COMMAND mbetest
+)
+
+ADD_EXECUTABLE(mbetest ${SRCS})
+TARGET_LINK_LIBRARIES(mbetest mbe gmock gtest)
