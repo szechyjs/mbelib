@@ -11,6 +11,8 @@ include_directories(
     ${mbe_SOURCE_DIR}
 )
 
+link_directories( ${mbe_BINARY_DIR} )
+
 add_custom_target(test
     DEPENDS mbetest
     COMMAND mbetest
