@@ -240,8 +240,8 @@ mbe_synthesizeSpeechf (float *aout_buf, mbe_parms * cur_mp, mbe_parms * prev_mp,
 
   if ((uvquality < 1) || (uvquality > 64))
     {
-      printf ("\nmbelib:  Error - uvquality must be within the range 1 - 64\n");
-      exit (1);
+      printf ("\nmbelib: Error - uvquality must be within the range 1 - 64, setting to default value of 3\n");
+      uvquality = 3;
     }
 
   // calculate loguvquality
