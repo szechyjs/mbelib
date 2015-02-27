@@ -126,12 +126,12 @@ mbe_spectralAmpEnhance (mbe_parms * cur_mp)
   Rm1 = 0;
   for (l = 1; l <= cur_mp->L; l++)
     {
-      Rm0 = Rm0 + powf (cur_mp->Ml[l], (float) 2);
-      Rm1 = Rm1 + (powf (cur_mp->Ml[l], (float) 2) * cosf (cur_mp->w0 * (float) l));
+      Rm0 = Rm0 + (cur_mp->Ml[l] * cur_mp->Ml[l]);
+      Rm1 = Rm1 + ((cur_mp->Ml[l] * cur_mp->Ml[l]) * cosf (cur_mp->w0 * (float) l));
     }
 
-  R2m0 = powf (Rm0, (float) 2);
-  R2m1 = powf (Rm1, (float) 2);
+  R2m0 = (Rm0*Rm0);
+  R2m1 = (Rm1*Rm1);
 
   for (l = 1; l <= cur_mp->L; l++)
     {
@@ -166,7 +166,7 @@ mbe_spectralAmpEnhance (mbe_parms * cur_mp)
         {
           M = -M;
         }
-      sum += powf (M, 2);
+      sum += (M*M);
     }
   if (sum == 0)
     {
@@ -240,8 +240,8 @@ mbe_synthesizeSpeechf (float *aout_buf, mbe_parms * cur_mp, mbe_parms * prev_mp,
 
   if ((uvquality < 1) || (uvquality > 64))
     {
-      printf ("\nmbelib:  Error - uvquality must be within the range 1 - 64\n");
-      exit (1);
+      printf ("\nmbelib: Error - uvquality must be within the range 1 - 64, setting to default value of 3\n");
+      uvquality = 3;
     }
 
   // calculate loguvquality
