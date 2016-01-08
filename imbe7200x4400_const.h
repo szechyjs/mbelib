@@ -16,7 +16,7 @@
  */
 
 #ifndef _IMBE7200X4400_CONST_H
-#define _IMBE7200x4400_CONST_H
+#define _IMBE7200X4400_CONST_H
 
 /*
  * Quantizer step size for higher order DCT coefficients
