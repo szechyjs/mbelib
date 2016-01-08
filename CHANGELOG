@@ -1,3 +1,8 @@
+1.3.0:
+	Initial DSTAR AMBE support
+	Fixed random number generator
+	Several bug fixes and optimizations
+
 1.2.5	Use CMake:
 	The cross platform building was getting hard to maintain,
 	removed Makefile in favor of CMake.

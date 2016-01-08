@@ -18,7 +18,7 @@
 #ifndef _MBELIB_H
 #define _MBELIB_H
 
-#define MBELIB_VERSION "1.2.5"
+#define MBELIB_VERSION "1.3.0"
 
 struct mbe_parameters
 {
