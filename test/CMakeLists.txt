@@ -13,10 +13,7 @@ include_directories(
 
 link_directories( ${mbe_BINARY_DIR} )
 
-add_custom_target(test
-    DEPENDS mbetest
-    COMMAND mbetest
-)
-
 ADD_EXECUTABLE(mbetest ${SRCS})
 TARGET_LINK_LIBRARIES(mbetest mbe gmock gtest)
+
+add_test(gtest  mbetest)
