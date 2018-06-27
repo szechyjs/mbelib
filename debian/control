@@ -1,0 +1,30 @@
+Source: libmbe
+Section: libs
+Priority: optional
+Maintainer: Jared Szechy <jared.szechy@gmail.com>
+Build-Depends: debhelper (>= 9), cmake
+Standards-Version: 4.1.4
+Homepage: https://github.com/szechyjs/mbelib
+
+Package: libmbe-dev
+Section: libdevel
+Architecture: any
+Multi-Arch: same
+Depends: libmbe1 (= ${binary:Version}), ${misc:Depends}
+Description: P25 Phase 1 and ProVoice vocoder: Headers
+
+Package: libmbe1
+Section: libs
+Architecture: any
+Multi-Arch: same
+Pre-Depends: ${misc:Pre-Depends}
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: P25 Phase 1 and ProVoice vocoder
+
+Package: libmbe-dbg
+Section: debug
+Priority: optional
+Architecture: any
+Multi-Arch: same
+Depends: libmbe1 (= ${binary:Version}), ${misc:Depends}
+Description: P25 Phase 1 and ProVoice vocoder: Debug
