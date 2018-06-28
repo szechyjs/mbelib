@@ -1,0 +1,10 @@
+libdir=@CMAKE_INSTALL_FULL_LIBDIR@
+includedir=@CMAKE_INSTALL_FULL_INCLUDEDIR@
+
+Name: libMBE
+Description: P25 Phase 1 and ProVoice vocoder
+Version: 1.3.0
+
+Libs: -L${libdir} -lmbe
+Libs.private: -lm
+Cflags: -I${includedir}

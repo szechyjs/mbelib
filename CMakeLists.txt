@@ -15,10 +15,17 @@ include(GNUInstallDirs)
 set_target_properties(mbe-static mbe-shared
                       PROPERTIES
                       OUTPUT_NAME mbe
-                      VERSION 1.0
+                      VERSION 1.3
                       SOVERSION 1
                       INSTALL_NAME_DIR ${CMAKE_INSTALL_FULL_LIBDIR}
                       PUBLIC_HEADER "mbelib.h")
+
+configure_file("${CMAKE_CURRENT_SOURCE_DIR}/libmbe.pc.in"
+               "${CMAKE_CURRENT_BINARY_DIR}/libmbe.pc"
+               @ONLY)
+
+install(FILES "${CMAKE_CURRENT_BINARY_DIR}/libmbe.pc"
+        DESTINATION "${CMAKE_INSTALL_LIBDIR}/pkgconfig")
 
 install(TARGETS mbe-static mbe-shared
         LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
