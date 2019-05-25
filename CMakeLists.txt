@@ -1,14 +1,21 @@
 project(mbe)
 cmake_minimum_required(VERSION 2.6)
 
+if(MSVC)
+    # needed for M_PI macro
+    add_definitions(-D_USE_MATH_DEFINES)
+endif()
+
 FILE(GLOB SRCS *.c)
 
 include_directories("${PROJECT_SOURCE_DIR}")
 
 ADD_LIBRARY(mbe-static STATIC ${SRCS})
 ADD_LIBRARY(mbe-shared SHARED ${SRCS})
-TARGET_LINK_LIBRARIES(mbe-static m)
-TARGET_LINK_LIBRARIES(mbe-shared m)
+if(NOT WIN32)
+    TARGET_LINK_LIBRARIES(mbe-static m)
+    TARGET_LINK_LIBRARIES(mbe-shared m)
+endif()
 
 include(GNUInstallDirs)
 
