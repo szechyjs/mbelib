@@ -22,6 +22,7 @@ include(GNUInstallDirs)
 set_target_properties(mbe-static mbe-shared
                       PROPERTIES
                       OUTPUT_NAME mbe
+                      PREFIX lib
                       VERSION 1.3
                       SOVERSION 1
                       INSTALL_NAME_DIR ${CMAKE_INSTALL_FULL_LIBDIR}
